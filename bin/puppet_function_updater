@@ -1,0 +1,78 @@
+#!/usr/bin/env ruby
+$:.unshift File.join(File.dirname(__FILE__), '..', 'lib')
+
+require 'logger'
+require 'optparse'
+require 'pfu'
+
+loglevel = Logger::WARN
+options = {}
+OptionParser.new do |opts|
+  opts.banner = "Usage: puppet_function_updater [paths]
+
+Run this command with a space separated list of legacy function file paths and it
+will attempt to automatically port them to the modern function API for you.
+
+If you run it from the root of a module directory, it will infer the namespace of
+the module and use it automatically in the generated function names.
+
+If you pass no paths and run it from the root of a module, it will assume that you
+mean to port all the legacy functions.
+
+"
+
+  opts.on('-v', '--verbose', 'Show verbose output') do
+    loglevel = Logger::INFO
+  end
+
+  opts.on('-d', '--debug', 'Show debugging messages') do
+    loglevel = Logger::DEBUG
+  end
+
+  opts.on('-n', '--namespace NAMESPACE', 'The namespace for the generated functions to live in') do |arg|
+    options[:namespace] = arg
+  end
+
+  opts.on('--shell', 'Open a pry shell for debugging (must have Pry installed)') do
+    options[:shell] = true
+  end
+
+  opts.on('--version', 'Show version number') do
+    puts Pfu::VERSION
+    exit
+  end
+
+end.parse!
+
+$logger           = Logger.new($stderr)
+$logger.level     = loglevel
+$logger.formatter = proc { |severity,datetime,progname,msg| "#{severity}: #{msg}\n" }
+
+options[:filenames]   = ARGV.map {|f| File.expand_path f} unless ARGV.empty?
+options[:filenames] ||= ['lib/puppet/parser/functions']
+
+options[:filenames].map! do |path|
+  next path unless File.directory? path
+
+  Dir.glob("#{path}/*")
+end
+options[:filenames].flatten!
+
+if options[:namespace].nil?
+  if File.exist? 'metadata.json'
+    metadata = JSON.parse(File.read('metadata.json'))
+    options[:namespace] = metadata['name'].split('-')[1]
+  else
+    $logger.warn "*********** Namespace is highly suggested! *********** "
+    $logger.warn "      Either run this command from within a module"
+    $logger.warn " or provide a namespace with the --namespace argument!"
+  end
+end
+
+if options[:shell]
+  require 'pry'
+  binding.pry
+  exit 0
+end
+
+Pfu.new(options).refactor!

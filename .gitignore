@@ -1,0 +1,10 @@
+*.gem
+/tmp/
+
+/.bundle/
+/vendor/bundle
+
+Gemfile.lock
+
+# this will ignore any generated Puppet functions
+/lib/puppet/functions
