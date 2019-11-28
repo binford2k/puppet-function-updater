@@ -7,6 +7,8 @@ directories containing functions. If omitted, it will default to porting all the
 legacy functions, so you can just run this in the root of a Puppet module and it
 will do the right thing.
 
+See a [tutorial](https://binford2k.com/2019/11/27/automagic-function-port/) on its usage on my blog.
+
 
 ## Installation
 
