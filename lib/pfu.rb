@@ -10,7 +10,7 @@ class Pfu
 
   def refactor!
     @filenames.each do |path|
-      data = Pfu::Parser.parse(path)
+      next unless data = Pfu::Parser.parse(path)
       data[:namespace] = @namespace
       Pfu::Generator.write(data)
     end

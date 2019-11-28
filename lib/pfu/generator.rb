@@ -19,12 +19,14 @@ class Pfu::Generator
     template = File.join(File.dirname(__FILE__), '..', '..', 'templates', 'function.erb')
     contents = ERB.new(File.read(template), nil, '-').result(binding)
 
+    $logger.info "Creating #{newpath}"
+    $logger.debug "Function contents:\n#{contents}"
+
     begin
       # syntax check the code before writing it
       RubyVM::InstructionSequence.compile(contents)
       FileUtils.mkdir_p("lib/puppet/functions/#{opts[:namespace]}")
       File.write(newpath, contents)
-      $logger.info "Created #{newpath}."
     rescue Exception => e
       $logger.error "Oh crap; the generated function isn't valid Ruby code!"
       $logger.error e.message

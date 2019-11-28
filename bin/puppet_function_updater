@@ -3,6 +3,7 @@ $:.unshift File.join(File.dirname(__FILE__), '..', 'lib')
 
 require 'logger'
 require 'optparse'
+require 'json'
 require 'pfu'
 
 loglevel = Logger::WARN
