@@ -30,6 +30,10 @@ mean to port all the legacy functions.
     loglevel = Logger::DEBUG
   end
 
+  opts.on('-c', '--clean', 'Show debugging messages') do
+    options[:clean] = true
+  end
+
   opts.on('-n', '--namespace NAMESPACE', 'The namespace for the generated functions to live in') do |arg|
     options[:namespace] = arg
   end

@@ -24,13 +24,16 @@ class Pfu::Generator
 
     begin
       # syntax check the code before writing it
+      # TODO: validate that it actually creates a puppet function
       RubyVM::InstructionSequence.compile(contents)
       FileUtils.mkdir_p("lib/puppet/functions/#{opts[:namespace]}")
       File.write(newpath, contents)
+      return true
     rescue Exception => e
       $logger.error "Oh crap; the generated function isn't valid Ruby code!"
       $logger.error e.message
       $logger.debug e.backtrace.join("\n")
+      return false
     end
 
   end

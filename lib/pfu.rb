@@ -6,13 +6,16 @@ class Pfu
   def initialize(options)
     @filenames = options[:filenames]
     @namespace = options[:namespace]
+    @clean     = options[:clean]
   end
 
   def refactor!
     @filenames.each do |path|
       next unless data = Pfu::Parser.parse(path)
       data[:namespace] = @namespace
-      Pfu::Generator.write(data)
+      if Pfu::Generator.write(data)
+        FileUtils.rm(path) if @clean
+      end
     end
 
     $logger.info "Functions generated. Please inspect for suitability and then"
