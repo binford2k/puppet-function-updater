@@ -7,8 +7,6 @@ directories containing functions. If omitted, it will default to porting all the
 legacy functions, so you can just run this in the root of a Puppet module and it
 will do the right thing.
 
-See a [tutorial](https://binford2k.com/2019/11/27/automagic-function-port/) on its usage on my blog.
-
 
 ## Installation
 
@@ -19,8 +17,52 @@ $ gem install puppet-function-updater
 
 ## Usage
 
-Run the command `puppet_function_updater` in the root of a Puppet module, then
-inspect all the generated functions for suitability.
+Run the command puppet_function_updater in the root of a Puppet module, then
+inspect all the generated functions for suitability when it’s done. If you pass
+the --clean argument it will **delete the legacy function file from disk** after
+validating that the new function works.
+
+You might see some warnings. Many can be ignored. For example, the following
+warning just means that the function attempted to require a library file outside
+of the the function block. You might evaluate whether you could remove the call
+or move it inside the function declaration so it's lazily loaded.
+
+```
+INFO: Creating lib/puppet/functions/stdlib/deep_merge.rb
+WARN: The function attempted to load libraries outside the function block.
+WARN: cannot load such file -- puppet/parser/functions (ignored)
+```
+
+On the other hand, errors like below indicate that the function code doesn't parse
+properly after porting. It's generally an issue with the original source code.
+
+```
+INFO: Creating lib/puppet/functions/stdlib/validate_x509_rsa_key_pair.rb
+ERROR: Oh crap; the generated function isn't valid Ruby code!
+ERROR: <compiled>:47: dynamic constant assignment
+    NUM_ARGS = 2 unless defined? NUM_ARGS
+             ^
+```
+
+### After porting
+
+Two files will be generated, the function file and the spec test for that function.
+
+* `lib/puppet/functions/<namespace>/<function>.rb`
+* `spec/functions/<namespace>_<function>_spec.rb`
+
+After porting, you should inspect the generated files. At a minimum, you'll want
+to clean up the documentation comments, but I'd also suggest reading a bit on the
+new function API and writing better dispatches to provide proper type checking
+and reduce the amount of manual argument validation your function must do.
+
+The test simply validates that the function compiles and defines a function
+properly, so you'll also want to write more test cases. If your legacy function
+has unit tests, you might consider porting them to the new function, following
+the examples provided as comments.
+
+See a [tutorial](https://binford2k.com/2019/11/27/automagic-function-port/) on its usage on my blog.
+
 
 ### Example:
 
@@ -44,7 +86,7 @@ INFO: Creating lib/puppet/functions/stdlib/concat.rb
 INFO: Creating lib/puppet/functions/stdlib/convert_base.rb
 INFO: Creating lib/puppet/functions/stdlib/count.rb
 INFO: Creating lib/puppet/functions/stdlib/deep_merge.rb
-ERROR: The function attempted to load libraries outside the function block.
+WARN: The function attempted to load libraries outside the function block.
 WARN: cannot load such file -- puppet/parser/functions (ignored)
 INFO: Creating lib/puppet/functions/stdlib/defined_with_params.rb
 INFO: Creating lib/puppet/functions/stdlib/delete.rb
@@ -62,10 +104,10 @@ INFO: Creating lib/puppet/functions/stdlib/downcase.rb
 INFO: Creating lib/puppet/functions/stdlib/empty.rb
 INFO: Creating lib/puppet/functions/stdlib/enclose_ipv6.rb
 INFO: Creating lib/puppet/functions/stdlib/ensure_packages.rb
-ERROR: The function attempted to load libraries outside the function block.
+WARN: The function attempted to load libraries outside the function block.
 WARN: cannot load such file -- puppet/parser/functions (ignored)
 INFO: Creating lib/puppet/functions/stdlib/ensure_resource.rb
-ERROR: The function attempted to load libraries outside the function block.
+WARN: The function attempted to load libraries outside the function block.
 WARN: cannot load such file -- puppet/parser/functions (ignored)
 INFO: Creating lib/puppet/functions/stdlib/ensure_resources.rb
 INFO: Creating lib/puppet/functions/stdlib/flatten.rb
@@ -74,7 +116,7 @@ INFO: Creating lib/puppet/functions/stdlib/fqdn_rand_string.rb
 INFO: Creating lib/puppet/functions/stdlib/fqdn_rotate.rb
 INFO: Creating lib/puppet/functions/stdlib/fqdn_uuid.rb
 INFO: Creating lib/puppet/functions/stdlib/get_module_path.rb
-ERROR: The function attempted to load libraries outside the function block.
+WARN: The function attempted to load libraries outside the function block.
 WARN: cannot load such file -- puppet/parser/functions (ignored)
 INFO: Creating lib/puppet/functions/stdlib/getparam.rb
 INFO: Creating lib/puppet/functions/stdlib/getvar.rb
@@ -155,7 +197,7 @@ INFO: Creating lib/puppet/functions/stdlib/validate_absolute_path.rb
 INFO: Creating lib/puppet/functions/stdlib/validate_array.rb
 INFO: Creating lib/puppet/functions/stdlib/validate_augeas.rb
 INFO: Creating lib/puppet/functions/stdlib/validate_bool.rb
-ERROR: The function attempted to load libraries outside the function block.
+WARN: The function attempted to load libraries outside the function block.
 WARN: cannot load such file -- puppet/util/execution (ignored)
 INFO: Creating lib/puppet/functions/stdlib/validate_cmd.rb
 INFO: Creating lib/puppet/functions/stdlib/validate_domain_name.rb

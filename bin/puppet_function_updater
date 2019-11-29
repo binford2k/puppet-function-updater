@@ -30,7 +30,7 @@ mean to port all the legacy functions.
     loglevel = Logger::DEBUG
   end
 
-  opts.on('-c', '--clean', 'Show debugging messages') do
+  opts.on('-c', '--clean', 'Delete legacy function files from disk') do
     options[:clean] = true
   end
 

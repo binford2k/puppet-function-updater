@@ -17,7 +17,7 @@ module Kernel
   def require(*a, &b)
     original_require(*a, &b)
   rescue LoadError => e
-    $logger.error "The function attempted to load libraries outside the function block."
+    $logger.warn "The function attempted to load libraries outside the function block."
     $logger.warn "#{e.message} (ignored)"
   end
 end
