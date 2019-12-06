@@ -10,7 +10,7 @@
 # ---- original file header ----
 #
 # @summary
-#   <%= opts[:doc] %>
+#   <%= opts[:doc] || 'Summarise what the function does here' %>
 #
 Puppet::Functions.create_function(:'<%= opts[:fullname] %>') do
   # @param <%= opts[:args] %>

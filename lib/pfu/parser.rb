@@ -55,7 +55,7 @@ class Pfu::Parser
     header = lines[0...(lines.index { |l| l =~ /Puppet::Parser::Functions/ })].join("\n")
     args   = lines[lineno-1].match(/\|\s*(\w+)\s*\|/)[1]
 
-    opts[:doc].gsub!("\n", "\n#")
+    opts[:doc].gsub!("\n", "\n#") unless opts[:doc].nil?
 
     opts[:name]           = funcname.to_sym
     opts[:header]         = header
