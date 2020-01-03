@@ -13,11 +13,19 @@ end
 # shudder
 module Kernel
   alias original_require require
+  alias original_require_relative require_relative
 
   def require(*a, &b)
     original_require(*a, &b)
   rescue LoadError => e
     $logger.warn "The function attempted to load libraries outside the function block."
+    $logger.warn "#{e.message} (ignored)"
+  end
+
+  def require_relative(*a, &b)
+    original_require_relative(*a, &b)
+  rescue LoadError => e
+    $logger.warn "The function attempted to relatively load libraries outside the function block."
     $logger.warn "#{e.message} (ignored)"
   end
 end
