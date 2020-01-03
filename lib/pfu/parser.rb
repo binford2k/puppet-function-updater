@@ -30,6 +30,8 @@ class Pfu::Parser
 
     begin
       funcname, opts, lineno = eval(source)
+      
+      raise 'Invalid function definition' unless (funcname and opts and lineno)
     rescue => e
       $logger.error "The function in #{path} doesn't load properly!"
       $logger.error e.message
