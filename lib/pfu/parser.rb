@@ -25,6 +25,7 @@ end
 
 class Pfu::Parser
   def self.parse(path)
+    return unless File.extname(path) == '.rb'
     source = File.read(path)
     lines  = source.split("\n")
 
