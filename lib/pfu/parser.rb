@@ -39,7 +39,7 @@ class Pfu::Parser
     stripcount = case source
     when /module\s+Puppet::Parser::Functions/
       2
-    when /Puppet::Parser::Functions.newfunction/
+    when /Puppet::Parser::Functions(.|::)newfunction/
       1
     end
 
