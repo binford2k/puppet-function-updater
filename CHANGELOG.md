@@ -1,3 +1,6 @@
+v0.0.5
+  * Catch a lot of weird little edge cases
+
 v0.0.4
   * Generate a simple spec test for the new function
   * Properly report the `require` warning as a warning

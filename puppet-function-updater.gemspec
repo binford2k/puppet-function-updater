@@ -9,6 +9,7 @@ Gem::Specification.new do |s|
   s.summary           = "Automagically ports legacy Puppet functions to the modern API."
   s.license           = 'Apache-2.0'
   s.email             = "ben.ford@puppet.com"
+  s.homepage          = "https://binford2k.com/2019/11/27/automagic-function-port/"
   s.authors           = ["Ben Ford"]
   s.require_path      = "lib"
   s.executables       = %w( puppet_function_updater )
