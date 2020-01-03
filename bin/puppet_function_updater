@@ -65,7 +65,7 @@ options[:filenames].flatten!
 
 if options[:namespace].nil?
   if File.exist? 'metadata.json'
-    metadata = JSON.parse(File.read('metadata.json'))
+    metadata = JSON.parse(File.read('metadata.json')) rescue {'name' => ''}
     options[:namespace] = metadata['name'].split('-')[1]
   else
     $logger.warn "*********** Namespace is highly suggested! *********** "
