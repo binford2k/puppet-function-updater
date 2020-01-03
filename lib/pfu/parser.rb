@@ -1,3 +1,6 @@
+# We don't actually use this, but a surprising number of functions assume it
+require 'yaml'
+
 module Puppet
   module Parser
     module Functions
