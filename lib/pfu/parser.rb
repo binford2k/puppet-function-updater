@@ -58,7 +58,7 @@ class Pfu::Parser
     end
 
     block = lines[(lineno-1)..-1].join("\n")
-    block.gsub!(/\A.*\|\w+\|/, '')                               # remove block arg string ("|args|")
+    block.gsub!(/\A.*\|\*?\w+\|/, '')                            # remove block arg string ("|args|")
     block.gsub!(/((end|})\s*){#{stripcount}}(^#.*|\s*)*\z/, '')  # remove closing block keywords and trailing comments
 
     heredoc = source.match(/<<-['"]?(\w+)['"]?/)
