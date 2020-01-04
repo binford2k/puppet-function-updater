@@ -1,5 +1,6 @@
-# We don't actually use this, but a surprising number of functions assume it
+# We don't actually use these, but a surprising number of functions assume them
 require 'yaml'
+require 'net/http'
 
 module Puppet
   module Parser
@@ -67,7 +68,7 @@ class Pfu::Parser
     end
 
     header = lines[0...(lines.index { |l| l =~ /Puppet::Parser::Functions/ })].join("\n")
-    args   = lines[lineno-1].match(/\|\s*\*?(\w+)\s*\|/)[1]
+    args   = lines[lineno-1..lineno].join(' ').match(/\|\s*\*?(\w+)\s*\|/)[1]
 
     opts[:doc]            = opts[:doc].gsub("\n", "\n#") unless opts[:doc].nil?
     opts[:name]           = funcname.to_sym
